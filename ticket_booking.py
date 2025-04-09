@@ -171,9 +171,7 @@ class PayPalPayment(PaymentStrategy):
         print(f"Paid ${amount} via PayPal")
         return True
 
-# ---------------------------
 # GUI Implementation
-# ---------------------------
 
 class BookingGUI:
     """Main GUI class for the ticket booking system"""

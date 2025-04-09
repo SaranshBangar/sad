@@ -2,8 +2,6 @@
 
 A Python-based application for booking movie tickets, implementing multiple design patterns to demonstrate object-oriented programming principles.
 
-![Ticket Booking System](https://via.placeholder.com/800x400?text=Movie+Ticket+Booking+System)
-
 ## Features
 
 - Multiple ticket types (Standard, Premium, VIP)

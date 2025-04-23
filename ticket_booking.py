@@ -1,3 +1,12 @@
+'''
+1. Factory Pattern
+2. Singleton Pattern
+3. Observer Pattern
+4. Strategy Pattern
+5. Decorator Pattern
+
+'''
+
 import tkinter as tk
 from tkinter import ttk, messagebox, font
 import matplotlib.pyplot as plt

@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.colors as mcolors
 
-# Base Ticket class (part of the Factory Pattern)
 class Ticket:
     def cost(self):
         pass
@@ -12,7 +11,6 @@ class Ticket:
     def description(self):
         pass
 
-# Concrete Ticket types
 class StandardTicket(Ticket):
     def cost(self):
         return 10
@@ -34,7 +32,6 @@ class VIPTicket(Ticket):
     def description(self):
         return "VIP Ticket"
 
-# Factory Pattern: Creates different types of tickets
 class TicketFactory:
     def create_ticket(self, ticket_type):
         if ticket_type == "standard":
@@ -46,7 +43,6 @@ class TicketFactory:
         else:
             raise ValueError("Invalid ticket type")
 
-# Decorator Pattern: Base decorator for adding features to tickets
 class TicketDecorator(Ticket):
     def __init__(self, ticket):
         self._ticket = ticket
@@ -57,7 +53,6 @@ class TicketDecorator(Ticket):
     def description(self):
         return self._ticket.description()
 
-# Concrete decorators for additional ticket features
 class FoodDecorator(TicketDecorator):
     def cost(self):
         return self._ticket.cost() + 5
@@ -72,7 +67,6 @@ class VIPSeatDecorator(TicketDecorator):
     def description(self):
         return self._ticket.description() + ", VIP Seat"
 
-# Singleton Pattern: Manages the ticket booking system
 class BookingSystem:
     _instance = None
 
@@ -84,7 +78,6 @@ class BookingSystem:
             cls._instance.booking_history = [] 
         return cls._instance
 
-    # Observer Pattern: Methods to manage observers
     def add_observer(self, observer):
         self._observers.append(observer)
 
@@ -95,10 +88,8 @@ class BookingSystem:
         for observer in self._observers:
             observer.update("Seats available now!")
 
-    # Main booking functionality
     def book_ticket(self, user, ticket, payment_strategy):
         if self.available_seats > 0:
-            # Strategy Pattern: Uses payment strategy to process payment
             if payment_strategy.pay(ticket.cost()):
                 self.available_seats -= 1
                 self.booking_history.append({
@@ -118,7 +109,6 @@ class BookingSystem:
             return True
         return False
     
-    # Calculate booking statistics
     def get_booking_stats(self):
         if not self.booking_history:
             return {"total": 0, "revenue": 0}
@@ -127,7 +117,6 @@ class BookingSystem:
         revenue = sum(booking["cost"] for booking in self.booking_history)
         return {"total": total, "revenue": revenue}
 
-# Observer Pattern: User class that receives notifications
 class User:
     def __init__(self, name):
         self.name = name
@@ -135,12 +124,10 @@ class User:
     def update(self, message):
         print(f"{self.name} received notification: {message}")
 
-# Strategy Pattern: Payment method interfaces
 class PaymentStrategy:
     def pay(self, amount):
         pass
 
-# Concrete payment strategies
 class CreditCardPayment(PaymentStrategy):
     def pay(self, amount):
         print(f"Paid ${amount} via Credit Card")
@@ -151,7 +138,6 @@ class PayPalPayment(PaymentStrategy):
         print(f"Paid ${amount} via PayPal")
         return True
 
-# GUI Implementation for the ticket booking system
 class BookingGUI:
     def __init__(self, root):
         self.root = root
@@ -159,7 +145,6 @@ class BookingGUI:
         self.root.geometry("800x700")
         self.root.configure(bg="#f5f5f5")
         
-        # Define fonts and colors for UI
         self.header_font = font.Font(family="Helvetica", size=14, weight="bold")
         self.normal_font = font.Font(family="Helvetica", size=10)
         self.button_font = font.Font(family="Helvetica", size=10, weight="bold")
@@ -170,7 +155,6 @@ class BookingGUI:
         self.bg_color = "#f5f5f5"
         self.text_color = "#2c3e50"
         
-        # Get singleton instance of booking system
         self.booking_system = BookingSystem()
         
         self.create_widgets()
@@ -178,25 +162,21 @@ class BookingGUI:
         self.update_plot()
 
     def create_widgets(self):
-        # Main container frame
         main_frame = ttk.Frame(self.root, padding=15)
         main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
         
-        # Configure styles for UI components
         style = ttk.Style()
         style.configure("TLabel", font=self.normal_font, foreground=self.text_color)
         style.configure("TButton", font=self.button_font, background=self.primary_color)
         style.configure("TEntry", font=self.normal_font)
         style.configure("TFrame", background=self.bg_color)
         
-        # Header section
         header_frame = ttk.Frame(main_frame)
         header_frame.pack(fill=tk.X, pady=10)
         
         header_label = ttk.Label(header_frame, text="Movie Ticket Booking System", font=self.header_font)
         header_label.pack()
         
-        # User input section
         input_frame = ttk.Frame(main_frame, padding=10)
         input_frame.pack(fill=tk.X, pady=10)
         
@@ -215,7 +195,6 @@ class BookingGUI:
         self.payment_method.grid(row=2, column=1, sticky=tk.W, pady=5, padx=5)
         self.payment_method.current(0)
         
-        # Add-ons section (uses Decorator pattern)
         addons_frame = ttk.LabelFrame(input_frame, text="Add-ons", padding=10)
         addons_frame.grid(row=3, column=0, columnspan=2, sticky=tk.EW, pady=10)
         
@@ -229,11 +208,9 @@ class BookingGUI:
         vip_seat_cb.grid(row=0, column=1, sticky=tk.W, padx=5)
         vip_seat_cb.configure(command=self.update_price_preview)
         
-        # Price preview
         self.price_preview = ttk.Label(input_frame, text="Total: $10", font=self.button_font)
         self.price_preview.grid(row=4, column=0, columnspan=2, pady=10)
         
-        # Action buttons
         button_frame = ttk.Frame(input_frame)
         button_frame.grid(row=5, column=0, columnspan=2, pady=10)
         
@@ -245,18 +222,15 @@ class BookingGUI:
         cancel_button.pack(side=tk.LEFT, padx=5)
         style.configure("Cancel.TButton", background=self.accent_color)
         
-        # Status display
         self.seats_label = ttk.Label(main_frame, text="", font=self.normal_font)
         self.seats_label.pack(pady=10)
         
-        # Statistics section
         stats_frame = ttk.LabelFrame(main_frame, text="Booking Statistics", padding=10)
         stats_frame.pack(fill=tk.X, pady=10)
         
         self.stats_label = ttk.Label(stats_frame, text="Total Bookings: 0 | Total Revenue: $0")
         self.stats_label.pack()
         
-        # Visualization section
         graph_frame = ttk.Frame(main_frame)
         graph_frame.pack(fill=tk.BOTH, expand=True, pady=10)
         
@@ -264,13 +238,11 @@ class BookingGUI:
         self.canvas = FigureCanvasTkAgg(self.figure, master=graph_frame)
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
-    # Update price based on ticket type and add-ons
     def update_price_preview(self, event=None):
         factory = TicketFactory()
         try:
             ticket = factory.create_ticket(self.ticket_type.get())
             
-            # Apply decorators based on selected add-ons
             if self.food_var.get():
                 ticket = FoodDecorator(ticket)
             if self.vip_seat_var.get():
@@ -280,14 +252,12 @@ class BookingGUI:
         except ValueError:
             self.price_preview.config(text="Invalid selection")
 
-    # Update seat availability display
     def update_seats_display(self):
         self.seats_label.config(text=f"Available Seats: {self.booking_system.available_seats} / 10")
         
         stats = self.booking_system.get_booking_stats()
         self.stats_label.config(text=f"Total Bookings: {stats['total']} | Total Revenue: ${stats['revenue']}")
 
-    # Generate and update data visualization
     def update_plot(self):
         self.figure.clear()
         
@@ -332,7 +302,6 @@ class BookingGUI:
         self.figure.tight_layout()
         self.canvas.draw()
 
-    # Process ticket booking
     def book_ticket(self):
         if not self.user_name.get().strip():
             messagebox.showerror("Error", "Please enter a user name")
@@ -342,16 +311,13 @@ class BookingGUI:
         factory = TicketFactory()
         
         try:
-            # Create ticket using Factory pattern
             ticket = factory.create_ticket(self.ticket_type.get())
             
-            # Apply Decorator pattern for add-ons
             if self.food_var.get():
                 ticket = FoodDecorator(ticket)
             if self.vip_seat_var.get():
                 ticket = VIPSeatDecorator(ticket)
 
-            # Use Strategy pattern for payment
             payment_map = {
                 "Credit Card": CreditCardPayment(),
                 "PayPal": PayPalPayment()
@@ -367,7 +333,6 @@ class BookingGUI:
         except ValueError as e:
             messagebox.showerror("Error", str(e))
 
-    # Process booking cancellation
     def cancel_booking(self):
         if self.booking_system.cancel_booking():
             self.update_seats_display()

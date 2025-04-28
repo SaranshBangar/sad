@@ -151,101 +151,194 @@ class BookingGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Movie Ticket Booking System")
-        self.root.geometry("800x700")
-        self.root.configure(bg="#f5f5f5")
+        self.root.geometry("1000x700")
+        self.root.configure(bg="#f0f0f0") 
+
         
-        self.header_font = font.Font(family="Helvetica", size=14, weight="bold")
+        self.header_font = font.Font(family="Helvetica", size=16, weight="bold") 
         self.normal_font = font.Font(family="Helvetica", size=10)
         self.button_font = font.Font(family="Helvetica", size=10, weight="bold")
+        self.label_frame_font = font.Font(family="Helvetica", size=11, weight="bold")
+
         
         self.primary_color = "#3498db"
         self.secondary_color = "#2ecc71"
         self.accent_color = "#e74c3c"
-        self.bg_color = "#f5f5f5"
-        self.text_color = "#2c3e50"
-        
+        self.bg_color = "#f8f9fa" 
+        self.text_color = "#343a40" 
+        self.light_text_color = "#ffffff"
+        self.border_color = "#dee2e6"
+
         self.booking_system = BookingSystem()
+
         
+        style = ttk.Style()
+        style.theme_use('clam') 
+
+        style.configure("TFrame", background=self.bg_color)
+        style.configure("TLabel", font=self.normal_font, foreground=self.text_color, background=self.bg_color)
+        style.configure("Header.TLabel", font=self.header_font, foreground=self.primary_color, background=self.bg_color)
+        style.configure("Preview.TLabel", font=self.button_font, foreground=self.text_color, background=self.bg_color)
+        style.configure("Seats.TLabel", font=self.normal_font, foreground=self.text_color, background=self.bg_color)
+        style.configure("Stats.TLabel", font=self.normal_font, foreground=self.text_color, background=self.bg_color)
+
+        style.configure("TButton", font=self.button_font, padding=6)
+        style.map("TButton",
+                  foreground=[('active', self.light_text_color), ('!disabled', self.light_text_color)],
+                  background=[('active', self.primary_color), ('!disabled', self.primary_color)])
+
+        style.configure("Accent.TButton", font=self.button_font, padding=6)
+        style.map("Accent.TButton",
+                  foreground=[('active', self.light_text_color), ('!disabled', self.light_text_color)],
+                  background=[('active', self.secondary_color), ('!disabled', self.secondary_color)])
+
+        style.configure("Cancel.TButton", font=self.button_font, padding=6)
+        style.map("Cancel.TButton",
+                  foreground=[('active', self.light_text_color), ('!disabled', self.light_text_color)],
+                  background=[('active', self.accent_color), ('!disabled', self.accent_color)])
+
+        style.configure("TEntry", font=self.normal_font, padding=5)
+        style.configure("TCombobox", font=self.normal_font, padding=5)
+        style.map("TCombobox", fieldbackground=[('readonly', self.bg_color)]) 
+
+        style.configure("TCheckbutton", font=self.normal_font, foreground=self.text_color, background=self.bg_color, padding=5)
+        style.map("TCheckbutton", indicatorcolor=[('selected', self.primary_color)])
+
+        style.configure("TLabelFrame", background=self.bg_color, bordercolor=self.border_color, relief=tk.SOLID, borderwidth=1)
+        style.configure("TLabelFrame.Label", font=self.label_frame_font, foreground=self.primary_color, background=self.bg_color)
+        
+
+
+        container = ttk.Frame(root, style="TFrame")
+        container.pack(fill=tk.BOTH, expand=True)
+
+
+        self.main_content_frame = ttk.Frame(container, padding=20, style="TFrame") 
+        self.main_content_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(20, 10), pady=20)
+
+
+        self.sidebar_frame = ttk.Frame(container, width=280, padding=15, style="TFrame") 
+        self.sidebar_frame.pack(side=tk.RIGHT, fill=tk.Y, padx=(0, 20), pady=20)
+        self.sidebar_frame.pack_propagate(False)
+
         self.create_widgets()
+        self.create_sidebar()
         self.update_seats_display()
         self.update_plot()
 
+    def create_sidebar(self):
+        sidebar_labelframe = ttk.LabelFrame(self.sidebar_frame, text="Design Patterns Used", padding=15) 
+        sidebar_labelframe.pack(fill=tk.BOTH, expand=True)
+
+        patterns = {
+            
+            "Factory Pattern": "Provides an interface for creating objects in a superclass, but allows subclasses to alter the type of objects that will be created.",
+            "Singleton Pattern": "Ensures a class only has one instance, and provides a global point of access to it.",
+            "Observer Pattern": "Defines a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically.",
+            "Strategy Pattern": "Defines a family of algorithms, encapsulates each one, and makes them interchangeable. Strategy lets the algorithm vary independently from clients that use it.",
+            "Decorator Pattern": "Attaches additional responsibilities to an object dynamically. Decorators provide a flexible alternative to subclassing for extending functionality."
+        }
+
+
+        sidebar_width = 280 
+        padding = 15 * 2 
+        label_padding = 5
+        wrap_length = sidebar_width - padding - label_padding * 2
+
+        for i, (pattern, definition) in enumerate(patterns.items()):
+            
+            ttk.Label(sidebar_labelframe, text=pattern, font=self.button_font, background=self.bg_color).pack(pady=(15 if i > 0 else 5, 3), anchor=tk.W, padx=5) 
+
+            definition_label = ttk.Label(sidebar_labelframe, text=definition, wraplength=wrap_length, justify=tk.LEFT, background=self.bg_color)
+            definition_label.pack(fill=tk.X, anchor=tk.W, pady=(0, 10), padx=5) 
+
     def create_widgets(self):
-        main_frame = ttk.Frame(self.root, padding=15)
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+
+        main_frame = self.main_content_frame
+
+
         
-        style = ttk.Style()
-        style.configure("TLabel", font=self.normal_font, foreground=self.text_color)
-        style.configure("TButton", font=self.button_font, background=self.primary_color)
-        style.configure("TEntry", font=self.normal_font)
-        style.configure("TFrame", background=self.bg_color)
+
+
+        header_frame = ttk.Frame(main_frame, style="TFrame")
+        header_frame.pack(fill=tk.X, pady=(0, 20)) 
+
         
-        header_frame = ttk.Frame(main_frame)
-        header_frame.pack(fill=tk.X, pady=10)
-        
-        header_label = ttk.Label(header_frame, text="Movie Ticket Booking System", font=self.header_font)
-        header_label.pack()
-        
-        input_frame = ttk.Frame(main_frame, padding=10)
+        header_label = ttk.Label(header_frame, text="Movie Ticket Booking System", style="Header.TLabel")
+        header_label.pack(pady=10) 
+
+        input_frame = ttk.Frame(main_frame, padding=15, style="TFrame") 
         input_frame.pack(fill=tk.X, pady=10)
+        input_frame.columnconfigure(1, weight=1) 
+
         
-        ttk.Label(input_frame, text="User Name:").grid(row=0, column=0, sticky=tk.W, pady=5)
-        self.user_name = ttk.Entry(input_frame, width=30)
-        self.user_name.grid(row=0, column=1, sticky=tk.W, pady=5, padx=5)
-        
-        ttk.Label(input_frame, text="Ticket Type:").grid(row=1, column=0, sticky=tk.W, pady=5)
-        self.ticket_type = ttk.Combobox(input_frame, values=["standard", "premium", "vip"], width=28)
-        self.ticket_type.grid(row=1, column=1, sticky=tk.W, pady=5, padx=5)
+        ttk.Label(input_frame, text="User Name:").grid(row=0, column=0, sticky=tk.W, pady=8, padx=5)
+        self.user_name = ttk.Entry(input_frame, width=35) 
+        self.user_name.grid(row=0, column=1, sticky=tk.EW, pady=8, padx=5)
+
+        ttk.Label(input_frame, text="Ticket Type:").grid(row=1, column=0, sticky=tk.W, pady=8, padx=5)
+        self.ticket_type = ttk.Combobox(input_frame, values=["standard", "premium", "vip"], width=33, state="readonly") 
+        self.ticket_type.grid(row=1, column=1, sticky=tk.EW, pady=8, padx=5)
         self.ticket_type.current(0)
         self.ticket_type.bind("<<ComboboxSelected>>", self.update_price_preview)
-        
-        ttk.Label(input_frame, text="Payment Method:").grid(row=2, column=0, sticky=tk.W, pady=5)
-        self.payment_method = ttk.Combobox(input_frame, values=["Credit Card", "PayPal"], width=28)
-        self.payment_method.grid(row=2, column=1, sticky=tk.W, pady=5, padx=5)
+
+        ttk.Label(input_frame, text="Payment Method:").grid(row=2, column=0, sticky=tk.W, pady=8, padx=5)
+        self.payment_method = ttk.Combobox(input_frame, values=["Credit Card", "PayPal"], width=33, state="readonly") 
+        self.payment_method.grid(row=2, column=1, sticky=tk.EW, pady=8, padx=5)
         self.payment_method.current(0)
+
         
-        addons_frame = ttk.LabelFrame(input_frame, text="Add-ons", padding=10)
-        addons_frame.grid(row=3, column=0, columnspan=2, sticky=tk.EW, pady=10)
-        
+        addons_frame = ttk.LabelFrame(input_frame, text="Add-ons", padding=15) 
+        addons_frame.grid(row=3, column=0, columnspan=2, sticky=tk.EW, pady=15, padx=5) 
+
         self.food_var = tk.BooleanVar()
-        food_cb = ttk.Checkbutton(addons_frame, text="Add Food Package (+$5)", variable=self.food_var)
-        food_cb.grid(row=0, column=0, sticky=tk.W, padx=5)
+        
+        food_cb = ttk.Checkbutton(addons_frame, text="Add Food Package (+$5)", variable=self.food_var, style="TCheckbutton")
+        food_cb.grid(row=0, column=0, sticky=tk.W, padx=10, pady=5) 
         food_cb.configure(command=self.update_price_preview)
-        
+
         self.vip_seat_var = tk.BooleanVar()
-        vip_seat_cb = ttk.Checkbutton(addons_frame, text="VIP Seat (+$15)", variable=self.vip_seat_var)
-        vip_seat_cb.grid(row=0, column=1, sticky=tk.W, padx=5)
+        
+        vip_seat_cb = ttk.Checkbutton(addons_frame, text="VIP Seat (+$15)", variable=self.vip_seat_var, style="TCheckbutton")
+        vip_seat_cb.grid(row=0, column=1, sticky=tk.W, padx=10, pady=5) 
         vip_seat_cb.configure(command=self.update_price_preview)
+
         
-        self.price_preview = ttk.Label(input_frame, text="Total: $10", font=self.button_font)
-        self.price_preview.grid(row=4, column=0, columnspan=2, pady=10)
-        
-        button_frame = ttk.Frame(input_frame)
+        self.price_preview = ttk.Label(input_frame, text="Total: $10", style="Preview.TLabel")
+        self.price_preview.grid(row=4, column=0, columnspan=2, pady=15) 
+
+        button_frame = ttk.Frame(input_frame, style="TFrame")
         button_frame.grid(row=5, column=0, columnspan=2, pady=10)
+
         
         book_button = ttk.Button(button_frame, text="Book Ticket", command=self.book_ticket, style="Accent.TButton")
-        book_button.pack(side=tk.LEFT, padx=5)
-        style.configure("Accent.TButton", background=self.secondary_color)
-        
+        book_button.pack(side=tk.LEFT, padx=10) 
+
         cancel_button = ttk.Button(button_frame, text="Cancel Booking", command=self.cancel_booking, style="Cancel.TButton")
-        cancel_button.pack(side=tk.LEFT, padx=5)
-        style.configure("Cancel.TButton", background=self.accent_color)
+        cancel_button.pack(side=tk.LEFT, padx=10) 
+
         
-        self.seats_label = ttk.Label(main_frame, text="", font=self.normal_font)
-        self.seats_label.pack(pady=10)
+        self.seats_label = ttk.Label(main_frame, text="", style="Seats.TLabel")
+        self.seats_label.pack(pady=15) 
+
         
-        stats_frame = ttk.LabelFrame(main_frame, text="Booking Statistics", padding=10)
+        stats_frame = ttk.LabelFrame(main_frame, text="Booking Statistics", padding=15) 
         stats_frame.pack(fill=tk.X, pady=10)
+
         
-        self.stats_label = ttk.Label(stats_frame, text="Total Bookings: 0 | Total Revenue: $0")
-        self.stats_label.pack()
-        
-        graph_frame = ttk.Frame(main_frame)
+        self.stats_label = ttk.Label(stats_frame, text="Total Bookings: 0 | Total Revenue: $0", style="Stats.TLabel")
+        self.stats_label.pack(pady=5) 
+
+        graph_frame = ttk.Frame(main_frame, style="TFrame")
         graph_frame.pack(fill=tk.BOTH, expand=True, pady=10)
+
         
-        self.figure = plt.figure(figsize=(6, 4))
+        self.figure = plt.figure(figsize=(6, 4), facecolor=self.bg_color)
         self.canvas = FigureCanvasTkAgg(self.figure, master=graph_frame)
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+        
+        self.figure.patch.set_facecolor(self.bg_color)
+
 
     def update_price_preview(self, event=None):
         factory = TicketFactory()
@@ -269,46 +362,71 @@ class BookingGUI:
 
     def update_plot(self):
         self.figure.clear()
-        
+        self.figure.patch.set_facecolor(self.bg_color) 
+
         ax1 = self.figure.add_subplot(121)
         ax2 = self.figure.add_subplot(122)
+
         
+        ax1.set_facecolor(self.bg_color)
+        ax2.set_facecolor(self.bg_color)
+
         available = self.booking_system.available_seats
         booked = 10 - available
-        
+
         labels = ['Available', 'Booked']
         sizes = [available, booked]
-        colors = ['#2ecc71', '#e74c3c']
-        
+        colors = [self.secondary_color, self.accent_color] 
+        textprops = {'color': self.text_color} 
+
         if booked == 0:
-            ax1.pie([1], labels=['All Available'], colors=['#2ecc71'], autopct='%1.1f%%', startangle=90)
+            ax1.pie([1], labels=['All Available'], colors=[self.secondary_color], autopct='%1.1f%%', startangle=90, textprops=textprops)
         elif available == 0:
-            ax1.pie([1], labels=['All Booked'], colors=['#e74c3c'], autopct='%1.1f%%', startangle=90)
+            ax1.pie([1], labels=['All Booked'], colors=[self.accent_color], autopct='%1.1f%%', startangle=90, textprops=textprops)
         else:
-            ax1.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
-            
-        ax1.set_title('Seat Availability')
+            ax1.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90, textprops=textprops)
+
+        ax1.set_title('Seat Availability', color=self.text_color)
         ax1.axis('equal')
-        
+
         stats = self.booking_system.get_booking_stats()
         bar_labels = ['Tickets Sold', 'Revenue ($)']
-        bar_values = [stats["total"], stats["revenue"] / 10]
         
-        bars = ax2.bar(bar_labels, bar_values, color=['#3498db', '#f39c12'])
-        ax2.set_title('Booking Statistics')
+        total_tickets = stats["total"]
         
+        
+        total_revenue = stats["revenue"]
+        bar_values = [total_tickets, total_revenue]
+
+        bars = ax2.bar(bar_labels, bar_values, color=[self.primary_color, '#f39c12']) 
+        ax2.set_title('Booking Statistics', color=self.text_color)
+
+        
+        ax2.tick_params(axis='x', colors=self.text_color)
+        ax2.tick_params(axis='y', colors=self.text_color)
+        ax2.yaxis.label.set_color(self.text_color)
+        ax2.xaxis.label.set_color(self.text_color)
+
+        
+        for spine in ax2.spines.values():
+            spine.set_edgecolor(self.text_color)
+
+
         for bar in bars:
             height = bar.get_height()
-            ax2.annotate(f'{height}',
+            
+            label_format = '${:.2f}' if bar.get_x() > 0.5 else '{:.0f}' 
+            ax2.annotate(label_format.format(height),
                         xy=(bar.get_x() + bar.get_width() / 2, height),
                         xytext=(0, 3),
                         textcoords="offset points",
-                        ha='center', va='bottom')
+                        ha='center', va='bottom', color=self.text_color)
+
         
-        if bar_labels[1] == 'Revenue ($)':
-            bars[1].set_label(f'${stats["revenue"]}')
         
-        self.figure.tight_layout()
+        
+
+        self.figure.tight_layout(pad=2.0) 
         self.canvas.draw()
 
     def book_ticket(self):
@@ -352,6 +470,6 @@ class BookingGUI:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.option_add("*Font", "Helvetica 10")
+    
     app = BookingGUI(root)
     root.mainloop()

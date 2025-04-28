@@ -41,6 +41,7 @@ class VIPTicket(Ticket):
     def description(self):
         return "VIP Ticket"
 
+# Factory Pattern: Used to create different types of tickets
 class TicketFactory:
     def create_ticket(self, ticket_type):
         if ticket_type == "standard":
@@ -52,6 +53,7 @@ class TicketFactory:
         else:
             raise ValueError("Invalid ticket type")
 
+# Decorator Pattern: Used to add optional features (food, VIP seat) to tickets
 class TicketDecorator(Ticket):
     def __init__(self, ticket):
         self._ticket = ticket
@@ -76,6 +78,7 @@ class VIPSeatDecorator(TicketDecorator):
     def description(self):
         return self._ticket.description() + ", VIP Seat"
 
+# Singleton Pattern: Ensures only one instance of the booking system exists
 class BookingSystem:
     _instance = None
 
@@ -87,6 +90,7 @@ class BookingSystem:
             cls._instance.booking_history = [] 
         return cls._instance
 
+    # Observer Pattern: Used here to notify users about seat availability changes
     def add_observer(self, observer):
         self._observers.append(observer)
 
@@ -137,6 +141,7 @@ class User:
     def update(self, message):
         print(f"{self.name} received notification: {message}")
 
+# Strategy Pattern: Used to define different payment methods
 class PaymentStrategy:
     def pay(self, amount, user_name):
         pass

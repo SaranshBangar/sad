@@ -99,15 +99,19 @@ class BookingSystem:
 
     def book_ticket(self, user, ticket, payment_strategy):
         if self.available_seats > 0:
-            if payment_strategy.pay(ticket.cost()):
+            if payment_strategy.pay(ticket.cost(), user.name):
                 self.available_seats -= 1
                 self.booking_history.append({
                     "user": user.name,
                     "ticket": ticket.description(),
                     "cost": ticket.cost()
                 })
+                stats = self.get_booking_stats()
+                print(f"Booking successful for {user.name}. Total revenue: ${stats['revenue']}")
                 return True
-            return False
+            else:
+                print(f"Payment failed for {user.name}.")
+                return False
         return False
 
     def cancel_booking(self):
@@ -134,17 +138,17 @@ class User:
         print(f"{self.name} received notification: {message}")
 
 class PaymentStrategy:
-    def pay(self, amount):
+    def pay(self, amount, user_name):
         pass
 
 class CreditCardPayment(PaymentStrategy):
-    def pay(self, amount):
-        print(f"Paid ${amount} via Credit Card")
+    def pay(self, amount, user_name):
+        print(f"{user_name} paid ${amount} via Credit Card")
         return True
 
 class PayPalPayment(PaymentStrategy):
-    def pay(self, amount):
-        print(f"Paid ${amount} via PayPal")
+    def pay(self, amount, user_name):
+        print(f"{user_name} paid ${amount} via PayPal")
         return True
 
 class BookingGUI:
@@ -240,10 +244,12 @@ class BookingGUI:
         }
 
 
+        
         sidebar_width = 280 
-        padding = 15 * 2 
-        label_padding = 5
-        wrap_length = sidebar_width - padding - label_padding * 2
+        frame_padding = 15 * 2 
+        label_padx = 5 * 2     
+        
+        wrap_length = sidebar_width - frame_padding - label_padx - 10 
 
         for i, (pattern, definition) in enumerate(patterns.items()):
             
@@ -430,11 +436,12 @@ class BookingGUI:
         self.canvas.draw()
 
     def book_ticket(self):
-        if not self.user_name.get().strip():
+        user_name_str = self.user_name.get().strip()
+        if not user_name_str:
             messagebox.showerror("Error", "Please enter a user name")
             return
-            
-        user = User(self.user_name.get())
+
+        user = User(user_name_str) 
         factory = TicketFactory()
         
         try:
@@ -454,9 +461,13 @@ class BookingGUI:
             if self.booking_system.book_ticket(user, ticket, payment_strategy):
                 self.update_seats_display()
                 self.update_plot()
-                messagebox.showinfo("Success", f"Ticket booked successfully!\n\nDetails:\n- {ticket.description()}\n- Cost: ${ticket.cost()}")
+                messagebox.showinfo("Success", f"Ticket booked successfully for {user.name}!\n\nDetails:\n- {ticket.description()}\n- Cost: ${ticket.cost()}")
             else:
-                messagebox.showerror("Error", "No seats available")
+                if self.booking_system.available_seats <= 0:
+                    messagebox.showerror("Error", "No seats available")
+                else:
+                     messagebox.showerror("Error", "Payment failed or booking could not be completed.")
+
         except ValueError as e:
             messagebox.showerror("Error", str(e))
 

@@ -1,0 +1,85 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 217 33% 17%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 47 95% 59%;
+    --primary-foreground: 222 47% 11%;
+
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 224 76% 48%;
+
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .movie-card {
+    @apply relative overflow-hidden rounded-lg bg-card shadow-md hover:shadow-xl transition-all duration-300;
+  }
+  
+  .movie-card-img {
+    @apply w-full h-64 object-cover transition-transform duration-300;
+  }
+  
+  .movie-card:hover .movie-card-img {
+    @apply scale-105;
+  }
+  
+  .cinema-button {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md transition-all duration-200 font-medium;
+  }
+  
+  .cinema-button-outline {
+    @apply border border-primary text-primary hover:bg-primary/10 px-4 py-2 rounded-md transition-all duration-200 font-medium;
+  }
+  
+  .cinema-input {
+    @apply bg-background border-border rounded-md px-3 py-2 focus:ring-2 focus:ring-primary/50 focus:outline-none;
+  }
+  
+  .cinema-seat {
+    @apply w-8 h-8 rounded-t-lg border-t border-l border-r border-primary/30 bg-card hover:bg-primary/20 transition-colors cursor-pointer m-1;
+  }
+  
+  .cinema-seat-booked {
+    @apply bg-muted cursor-not-allowed hover:bg-muted;
+  }
+  
+  .cinema-seat-selected {
+    @apply bg-primary/70 hover:bg-primary;
+  }
+}

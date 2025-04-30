@@ -1,12 +1,3 @@
-'''
-1. Factory Pattern
-2. Singleton Pattern
-3. Observer Pattern
-4. Strategy Pattern
-5. Decorator Pattern
-
-'''
-
 import tkinter as tk
 from tkinter import ttk, messagebox, font
 import matplotlib.pyplot as plt
@@ -41,7 +32,6 @@ class VIPTicket(Ticket):
     def description(self):
         return "VIP Ticket"
 
-# Factory Pattern: Used to create different types of tickets
 class TicketFactory:
     def create_ticket(self, ticket_type):
         if ticket_type == "standard":
@@ -53,7 +43,6 @@ class TicketFactory:
         else:
             raise ValueError("Invalid ticket type")
 
-# Decorator Pattern: Used to add optional features (food, VIP seat) to tickets
 class TicketDecorator(Ticket):
     def __init__(self, ticket):
         self._ticket = ticket
@@ -78,7 +67,6 @@ class VIPSeatDecorator(TicketDecorator):
     def description(self):
         return self._ticket.description() + ", VIP Seat"
 
-# Singleton Pattern: Ensures only one instance of the booking system exists
 class BookingSystem:
     _instance = None
 
@@ -90,7 +78,6 @@ class BookingSystem:
             cls._instance.booking_history = [] 
         return cls._instance
 
-    # Observer Pattern: Used here to notify users about seat availability changes
     def add_observer(self, observer):
         self._observers.append(observer)
 
@@ -141,7 +128,6 @@ class User:
     def update(self, message):
         print(f"{self.name} received notification: {message}")
 
-# Strategy Pattern: Used to define different payment methods
 class PaymentStrategy:
     def pay(self, amount, user_name):
         pass
@@ -160,16 +146,13 @@ class BookingGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Movie Ticket Booking System")
-        self.root.geometry("1100x750") # Increased window size slightly
+        self.root.geometry("1100x750")
         self.root.configure(bg="#f0f0f0")
 
-
-        # Increased font sizes
         self.header_font = font.Font(family="Helvetica", size=18, weight="bold")
         self.normal_font = font.Font(family="Helvetica", size=12)
         self.button_font = font.Font(family="Helvetica", size=12, weight="bold")
         self.label_frame_font = font.Font(family="Helvetica", size=13, weight="bold")
-
 
         self.primary_color = "#3498db"
         self.secondary_color = "#2ecc71"
@@ -181,7 +164,6 @@ class BookingGUI:
 
         self.booking_system = BookingSystem()
 
-        
         style = ttk.Style()
         style.theme_use('clam') 
 
@@ -217,17 +199,12 @@ class BookingGUI:
         style.configure("TLabelFrame", background=self.bg_color, bordercolor=self.border_color, relief=tk.SOLID, borderwidth=1)
         style.configure("TLabelFrame.Label", font=self.label_frame_font, foreground=self.primary_color, background=self.bg_color)
         
-
-
         container = ttk.Frame(root, style="TFrame")
         container.pack(fill=tk.BOTH, expand=True)
-
 
         self.main_content_frame = ttk.Frame(container, padding=20, style="TFrame") 
         self.main_content_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(20, 10), pady=20)
 
-
-        # Increased sidebar width
         self.sidebar_frame = ttk.Frame(container, width=320, padding=15, style="TFrame")
         self.sidebar_frame.pack(side=tk.RIGHT, fill=tk.Y, padx=(0, 20), pady=20)
         self.sidebar_frame.pack_propagate(False)
@@ -242,7 +219,6 @@ class BookingGUI:
         sidebar_labelframe.pack(fill=tk.BOTH, expand=True)
 
         patterns = {
-            
             "Factory Pattern": "Provides an interface for creating objects in a superclass, but allows subclasses to alter the type of objects that will be created.",
             "Singleton Pattern": "Ensures a class only has one instance, and provides a global point of access to it.",
             "Observer Pattern": "Defines a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically.",
@@ -250,9 +226,6 @@ class BookingGUI:
             "Decorator Pattern": "Attaches additional responsibilities to an object dynamically. Decorators provide a flexible alternative to subclassing for extending functionality."
         }
 
-
-        
-        # Recalculated wrap length based on new sidebar width
         sidebar_width = 320
         frame_padding = 15 * 2
         label_padx = 5 * 2
@@ -260,24 +233,17 @@ class BookingGUI:
         wrap_length = sidebar_width - frame_padding - label_padx - 10
 
         for i, (pattern, definition) in enumerate(patterns.items()):
-            
             ttk.Label(sidebar_labelframe, text=pattern, font=self.button_font, background=self.bg_color).pack(pady=(15 if i > 0 else 5, 3), anchor=tk.W, padx=5) 
 
             definition_label = ttk.Label(sidebar_labelframe, text=definition, wraplength=wrap_length, justify=tk.LEFT, background=self.bg_color)
             definition_label.pack(fill=tk.X, anchor=tk.W, pady=(0, 10), padx=5) 
 
     def create_widgets(self):
-
         main_frame = self.main_content_frame
-
-
-        
-
 
         header_frame = ttk.Frame(main_frame, style="TFrame")
         header_frame.pack(fill=tk.X, pady=(0, 20)) 
 
-        
         header_label = ttk.Label(header_frame, text="Movie Ticket Booking System", style="Header.TLabel")
         header_label.pack(pady=10) 
 
@@ -285,23 +251,21 @@ class BookingGUI:
         input_frame.pack(fill=tk.X, pady=10)
         input_frame.columnconfigure(1, weight=1) 
 
-        
         ttk.Label(input_frame, text="User Name:").grid(row=0, column=0, sticky=tk.W, pady=8, padx=5)
-        self.user_name = ttk.Entry(input_frame, width=40) # Increased width slightly
+        self.user_name = ttk.Entry(input_frame, width=40) 
         self.user_name.grid(row=0, column=1, sticky=tk.EW, pady=8, padx=5)
 
         ttk.Label(input_frame, text="Ticket Type:").grid(row=1, column=0, sticky=tk.W, pady=8, padx=5)
-        self.ticket_type = ttk.Combobox(input_frame, values=["standard", "premium", "vip"], width=38, state="readonly") # Increased width slightly
+        self.ticket_type = ttk.Combobox(input_frame, values=["standard", "premium", "vip"], width=38, state="readonly") 
         self.ticket_type.grid(row=1, column=1, sticky=tk.EW, pady=8, padx=5)
         self.ticket_type.current(0)
         self.ticket_type.bind("<<ComboboxSelected>>", self.update_price_preview)
 
         ttk.Label(input_frame, text="Payment Method:").grid(row=2, column=0, sticky=tk.W, pady=8, padx=5)
-        self.payment_method = ttk.Combobox(input_frame, values=["Credit Card", "PayPal"], width=38, state="readonly") # Increased width slightly
+        self.payment_method = ttk.Combobox(input_frame, values=["Credit Card", "PayPal"], width=38, state="readonly") 
         self.payment_method.grid(row=2, column=1, sticky=tk.EW, pady=8, padx=5)
         self.payment_method.current(0)
 
-        
         addons_frame = ttk.LabelFrame(input_frame, text="Add-ons", padding=15) 
         addons_frame.grid(row=3, column=0, columnspan=2, sticky=tk.EW, pady=15, padx=5) 
 
@@ -317,42 +281,35 @@ class BookingGUI:
         vip_seat_cb.grid(row=0, column=1, sticky=tk.W, padx=10, pady=5) 
         vip_seat_cb.configure(command=self.update_price_preview)
 
-        
         self.price_preview = ttk.Label(input_frame, text="Total: $10", style="Preview.TLabel")
         self.price_preview.grid(row=4, column=0, columnspan=2, pady=15) 
 
         button_frame = ttk.Frame(input_frame, style="TFrame")
         button_frame.grid(row=5, column=0, columnspan=2, pady=10)
 
-        
         book_button = ttk.Button(button_frame, text="Book Ticket", command=self.book_ticket, style="Accent.TButton")
         book_button.pack(side=tk.LEFT, padx=10) 
 
         cancel_button = ttk.Button(button_frame, text="Cancel Booking", command=self.cancel_booking, style="Cancel.TButton")
         cancel_button.pack(side=tk.LEFT, padx=10) 
 
-        
         self.seats_label = ttk.Label(main_frame, text="", style="Seats.TLabel")
         self.seats_label.pack(pady=15) 
 
-        
         stats_frame = ttk.LabelFrame(main_frame, text="Booking Statistics", padding=15) 
         stats_frame.pack(fill=tk.X, pady=10)
 
-        
         self.stats_label = ttk.Label(stats_frame, text="Total Bookings: 0 | Total Revenue: $0", style="Stats.TLabel")
         self.stats_label.pack(pady=5) 
 
         graph_frame = ttk.Frame(main_frame, style="TFrame")
         graph_frame.pack(fill=tk.BOTH, expand=True, pady=10)
 
-        
         self.figure = plt.figure(figsize=(6, 4), facecolor=self.bg_color)
         self.canvas = FigureCanvasTkAgg(self.figure, master=graph_frame)
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
         
         self.figure.patch.set_facecolor(self.bg_color)
-
 
     def update_price_preview(self, event=None):
         factory = TicketFactory()
@@ -378,14 +335,12 @@ class BookingGUI:
         self.figure.clear()
         self.figure.patch.set_facecolor(self.bg_color) 
 
-        # Increased plot font size slightly
         plot_font_size = 10
         title_font_size = 12
 
         ax1 = self.figure.add_subplot(121)
         ax2 = self.figure.add_subplot(122)
 
-        
         ax1.set_facecolor(self.bg_color)
         ax2.set_facecolor(self.bg_color)
 
@@ -395,7 +350,7 @@ class BookingGUI:
         labels = ['Available', 'Booked']
         sizes = [available, booked]
         colors = [self.secondary_color, self.accent_color] 
-        textprops = {'color': self.text_color, 'fontsize': plot_font_size} # Added fontsize
+        textprops = {'color': self.text_color, 'fontsize': plot_font_size} 
 
         if booked == 0:
             ax1.pie([1], labels=['All Available'], colors=[self.secondary_color], autopct='%1.1f%%', startangle=90, textprops=textprops)
@@ -404,7 +359,7 @@ class BookingGUI:
         else:
             ax1.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90, textprops=textprops)
 
-        ax1.set_title('Seat Availability', color=self.text_color, fontsize=title_font_size) # Added fontsize
+        ax1.set_title('Seat Availability', color=self.text_color, fontsize=title_font_size) 
         ax1.axis('equal')
 
         stats = self.booking_system.get_booking_stats()
@@ -412,23 +367,19 @@ class BookingGUI:
         
         total_tickets = stats["total"]
         
-        
         total_revenue = stats["revenue"]
         bar_values = [total_tickets, total_revenue]
 
         bars = ax2.bar(bar_labels, bar_values, color=[self.primary_color, '#f39c12']) 
-        ax2.set_title('Booking Statistics', color=self.text_color, fontsize=title_font_size) # Added fontsize
+        ax2.set_title('Booking Statistics', color=self.text_color, fontsize=title_font_size)
 
-        
         ax2.tick_params(axis='x', colors=self.text_color, labelsize=plot_font_size)
         ax2.tick_params(axis='y', colors=self.text_color, labelsize=plot_font_size)
         ax2.yaxis.label.set_color(self.text_color)
         ax2.xaxis.label.set_color(self.text_color)
 
-        
         for spine in ax2.spines.values():
             spine.set_edgecolor(self.text_color)
-
 
         for bar in bars:
             height = bar.get_height()
@@ -438,11 +389,7 @@ class BookingGUI:
                         xy=(bar.get_x() + bar.get_width() / 2, height),
                         xytext=(0, 3),
                         textcoords="offset points",
-                        ha='center', va='bottom', color=self.text_color, fontsize=plot_font_size) # Added fontsize
-
-        
-        
-        
+                        ha='center', va='bottom', color=self.text_color, fontsize=plot_font_size) 
 
         self.figure.tight_layout(pad=2.0) 
         self.canvas.draw()
